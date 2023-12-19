@@ -1,118 +1,99 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable react/no-unstable-nested-components */
+import HomePage from './android/app/src/Screens/HomePage';
+import Cart from './android/app/src/Screens/Cart';
+import Detail from './android/app/src/Screens/Detail';
+import Profile from './android/app/src/Screens/Profile';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {Image} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import UseQuery from './android/app/src/Screens/ReactQuery';
+import AsyncStorageExamp from './android/app/src/Screens/asyStorage';
+function App() {
+  const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
+  const Drawer = createDrawerNavigator();
+  const queryClient = new QueryClient();
+  const MyDrawer = () => {
+    return (
+      <Drawer.Navigator>
+        <Drawer.Screen name="BottomTab" component={BottomTab} />
+        <Drawer.Screen name="Detail" component={Detail} />
+        <Drawer.Screen name="Profile" component={Profile} />
+        <Drawer.Screen name="HomePage" component={HomePage} />
+        <Drawer.Screen name="Cart" component={Cart} />
+        <Drawer.Screen name="reactQuery" component={UseQuery}/>
+        <Drawer.Screen name="AsyncStorageExamp" component={AsyncStorageExamp}/>
+      </Drawer.Navigator>
+    );
   };
 
+  const BottomTab = () => {
+    return (
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Home"
+          component={HomePage}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Image
+                style={{height: 20, width: 20}}
+                source={require('./android/app/src/Image/home.png')}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Cart"
+          component={Cart}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Image
+                style={{height: 20, width: 20}}
+                source={require('./android/app/src/Image/profile.png')}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => (
+              <Image
+                style={{height: 20, width: 20}}
+                source={require('./android/app/src/Image/cart.png')}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    );
+  };
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Drawer" component={MyDrawer} />
+            <Stack.Screen
+              name="Detail"
+              component={Detail}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
+          </QueryClientProvider>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
 export default App;
